@@ -1,17 +1,17 @@
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-  View,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  ScrollView,
+  Alert,
   KeyboardAvoidingView,
   Platform,
-  Alert
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
-import { useRouter } from 'expo-router';
-import TabHeader from './components/ui/TabHeader';
 import RegistrationForm from './components/auth/RegistrationForm';
+import TabHeader from './components/ui/TabHeader';
 
 export default function RegistrationScreen() {
   const [username, setUsername] = useState('');
@@ -35,7 +35,7 @@ export default function RegistrationScreen() {
     setTimeout(() => {
       setLoading(false);
       Alert.alert('Успешно', 'Регистрация прошла успешно');
-      router.push('/');
+      router.push('/clinic');
     }, 1000);
   };
 

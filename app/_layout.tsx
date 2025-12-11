@@ -18,6 +18,13 @@ export default function RootLayout() {
           title: 'Регистрация'
         }} 
       />
+       <Stack.Screen 
+        name="clinic" 
+        options={{ 
+          headerShown: false,
+          title: 'Клиника'
+        }} 
+      />
     </Stack>
   );
 }

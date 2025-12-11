@@ -1,44 +1,60 @@
+// components/Button.tsx
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+  ActivityIndicator,
+  GestureResponderEvent,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  ViewStyle
+} from 'react-native';
 
 interface ButtonProps {
   title: string;
-  onPress: () => void;
+  onPress: (event: GestureResponderEvent) => void;
   variant?: 'primary' | 'secondary' | 'outline';
   loading?: boolean;
   disabled?: boolean;
+  style?: ViewStyle;
+  textStyle?: TextStyle;
 }
 
-export default function Button({ 
+const Button: React.FC<ButtonProps> = ({ 
   title, 
   onPress, 
   variant = 'primary', 
   loading = false, 
-  disabled = false 
-}: ButtonProps) {
+  disabled = false,
+  style,
+  textStyle,
+}) => {
   return (
     <TouchableOpacity
       style={[
         styles.button,
         styles[variant],
-        disabled && styles.disabled
+        disabled && styles.disabled,
+        style,
       ]}
       onPress={onPress}
       disabled={disabled || loading}
+      activeOpacity={0.8}
     >
       {loading ? (
         <ActivityIndicator color="#fff" />
       ) : (
         <Text style={[
           styles.text,
-          styles[`${variant}Text`]
+          styles[`${variant}Text`],
+          textStyle,
         ]}>
           {title}
         </Text>
       )}
     </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
   button: {
@@ -47,12 +63,11 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: 'center',
     marginBottom: 20,
-    alignSelf: 'center', 
+    alignSelf: 'stretch',
+    marginHorizontal: 16,
   },
   primary: {
     backgroundColor: '#EEB16E',
-    color: 'FFF8E8',
-
     shadowColor: '#A47440',
     shadowOffset: {
         width: 0,
@@ -61,7 +76,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 4,
     elevation: 3,
-
   },
   secondary: {
     backgroundColor: '#6c757d',
@@ -88,3 +102,5 @@ const styles = StyleSheet.create({
     color: '#5D684F',
   },
 });
+
+export default Button;
