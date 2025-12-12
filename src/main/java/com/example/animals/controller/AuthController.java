@@ -24,9 +24,9 @@ public class AuthController {
         if (userRepository.existsByEmail(req.getEmail())) {
             return ResponseEntity.badRequest().body("Email already used");
         }
-        User user = new User(req.getName(), req.getEmail(), req.getPassword());
+        User user = new User(req.getUsername(), req.getEmail(), req.getPassword());
         User saved = userRepository.save(user);
-        UserResponse resp = new UserResponse(saved.getId(), saved.getName(), saved.getEmail());
+        UserResponse resp = new UserResponse(saved.getId(), saved.getUsername(), saved.getEmail());
         return ResponseEntity.status(201).body(resp);
     }
 
@@ -35,7 +35,7 @@ public class AuthController {
         return userRepository.findByEmail(req.getEmail())
                 .map(user -> {
                     if (user.getPassword().equals(req.getPassword())) {
-                        UserResponse resp = new UserResponse(user.getId(), user.getName(), user.getEmail());
+                        UserResponse resp = new UserResponse(user.getId(), user.getUsername(), user.getEmail());
                         return ResponseEntity.ok(resp);
                     } else {
                         return ResponseEntity.status(401).body("Invalid credentials");
