@@ -2,115 +2,165 @@
 
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React from 'react';
+import React, { useState } from 'react';
 import {
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  FlatList,
+  Dimensions,
+  ScrollView,
 } from 'react-native';
 import Button from './components/ui/Button';
+import PostCard from './components/ui/PostCard';
 
 interface ClinicProps{
     onSubmit: () => void;
     loading?: boolean;
 }
 
-export default function clinic({onSubmit,
+export default function Clinic({onSubmit,
   loading = false}:ClinicProps){
+
     const router = useRouter();
+    const [averageRating, setAverageRating] = useState(4.3);
+
+    // sample posts — в реальном приложении получите с сервера
+    const posts = Array.from({ length: 12 }).map((_, i) => ({
+      id: i.toString(),
+      uri: `https://picsum.photos/seed/clinic-${i}/600`, // случайные картинки
+    }));
+
+    const numColumns = 3;
+    const screenWidth = Dimensions.get("window").width;
+    const itemGap = 4;
+    const itemSize = Math.floor(screenWidth / 3);
 
     return (
-    <SafeAreaView style={styles.safeArea}>
-      {/* Основной контейнер - имитация Grid */}
-      <View style={styles.container}>
-        
-        {/* Стрелка назад - строка 1 */}
-        <View style={styles.arrowContainer}>
-          <TouchableOpacity onPress={() => router.back()}>
-            <Ionicons name="arrow-back" size={24} color="#333" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Аватар и информация - строка 2 */}
-        <View style={styles.row2}>
-          {/* Аватар (левая колонка) */}
-          <View style={styles.avatarContainer}>
-            {/* Иконка аватара */}
-            <View style={styles.iconContainer}>
-              <View style={styles.iconPlaceholder} />
-            </View>
-            {/* Звезды/рейтинг */}
-            <View style={styles.starsContainer}>
-              <View style={styles.starsPlaceholder} />
-            </View>
+      <SafeAreaView style={styles.safeArea}>
+        {/* Верхняя часть с информацией о клинике */}
+        <View style={styles.headerContainer}>
+          {/* Стрелка назад */}
+          <View style={styles.arrowContainer}>
+            <TouchableOpacity onPress={() => router.back()}>
+              <Ionicons name="arrow-back" size={24} color="#333" />
+            </TouchableOpacity>
           </View>
 
-
-        {/* Информация пользователя (правая колонка) */}
-          <View style={styles.usernameContainer}>
-            {/* Имя пользователя */}
-            <View style={styles.userNameContainer}>
-              <Text style={styles.userName}>_username._</Text>
-            </View>
-
-            {/* Роль/специализация */}
-            <View style={styles.roleContainer}>
-              <Text style={styles.role}>Ветклиника</Text>
-            </View>
-
-{/* Публикации и подписчики */}
-            <View style={styles.statsContainer}>
-              <View style={styles.publicationContainer}>
-                <Text style={styles.statNumber}>0</Text>
-                <Text style={styles.statLabel}>публикаций</Text>
+          {/* Аватар и информация */}
+          <View style={styles.row2}>
+            {/* Аватар (левая колонка) */}
+            <View style={styles.avatarContainer}>
+              {/* Иконка аватара */}
+              <View style={styles.iconContainer}>
+                <View style={styles.iconPlaceholder} />
               </View>
-              <View style={styles.subscribersContainer}>
-                <Text style={styles.statNumber}>0</Text>
-                <Text style={styles.statLabel}>подписчиков</Text>
+              {/* Звезды/рейтинг */}
+              <View style={styles.starsContainer}>
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <Image
+                    key={num}
+                    source={require('./components/images/star.png')}
+                    style={{
+                      width: 15,
+                      height: 15,
+                      marginHorizontal: 1,
+                      tintColor: averageRating >= num ? '#EEB16E' : '#CCCCCC',
+                    }}
+                  />
+                ))}
               </View>
             </View>
+
+            {/* Информация пользователя (правая колонка) */}
+            <View style={styles.usernameContainer}>
+              {/* Имя пользователя */}
+              <View style={styles.userNameContainer}>
+                <Text style={styles.userName}>_username._</Text>
+              </View>
+
+              {/* Роль/специализация */}
+              <View style={styles.roleContainer}>
+                <Text style={styles.role}>Ветклиника</Text>
+              </View>
+
+              {/* Публикации и подписчики */}
+              <View style={styles.statsContainer}>
+                <View style={styles.publicationContainer}>
+                  <Text style={styles.statNumber}>0</Text>
+                  <Text style={styles.statLabel}>публикаций</Text>
+                </View>
+                <View style={styles.subscribersContainer}>
+                  <Text style={styles.statNumber}>0</Text>
+                  <Text style={styles.statLabel}>подписчиков</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          {/* Кнопки и описание */}
+          <View style={styles.row3}>
+            {/* Кнопки (левая колонка) */}
+            <View style={styles.buttonsContainer}>
+              <View style={styles.buttonWrapper}>
+                <Button
+                  title="Записаться"
+                  onPress={onSubmit}
+                  loading={loading}
+                />
+              </View>
+            </View>
+
+            {/* Описание (правая колонка) */}
+            <View style={styles.descriptionContainer}>
+              <Text style={styles.descriptionText}>
+                Наша клиника с самым лучшим оборудованием и передовыми технологиями.
+                Гордимся нашим персоналом :)
+              </Text>
+            </View>
+          </View>
+
+          {/* Кнопки контактов */}
+          <View style={styles.row4}>
+            <TouchableOpacity style={styles.contactButton}>
+              <Text style={styles.contactButtonText}>Сообщение</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.contactButton}>
+              <Text style={styles.contactButtonText}>Электронн...</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.contactButton}>
+              <Text style={styles.contactButtonText}>Телефон</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
-        {/* Кнопки и описание - строка 3 */}
-        <View style={styles.row3}>
-          {/* Кнопки (левая колонка) */}
-          <View style={styles.buttonsContainer}>
-            <Button
-            title="Записаться"
-            onPress={onSubmit}
-            loading={loading}/>
-          </View>
+        {/* Разделительная линия */}
+        <View style={styles.divider} />
 
-          {/* Описание (правая колонка) */}
-          <View style={styles.descriptionContainer}>
-            <Text style={styles.descriptionText}>
-              Наша клиника с самым лучшим оборудованием и передовыми технологиями.
-              Гордимся нашим персоналом :)
-            </Text>
-          </View>
-        </View>
-
-        {/* Кнопки контактов - строка 4 */}
-        <View style={styles.row4}>
-          <TouchableOpacity style={styles.contactButton}>
-            <Text style={styles.contactButtonText}>Сообщение</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.contactButton}>
-            <Text style={styles.contactButtonText}>Электронн...</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.contactButton}>
-            <Text style={styles.contactButtonText}>Телефон</Text>
-          </TouchableOpacity>
-        </View>
-
-      </View>
-    </SafeAreaView>
-  );
+        {/* Сетка постов */}
+        <FlatList
+          data={posts}
+          keyExtractor={(item) => item.id}
+          numColumns={numColumns}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.postsContainer}
+          renderItem={({ item }) => (
+            <PostCard
+              image={item.uri}
+              size={itemSize}
+              onPress={() => {
+                console.log("Open post", item.id);
+              }}
+            />
+          )}
+          style={styles.flatList}
+        />
+      </SafeAreaView>
+    );
 }
-
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -118,28 +168,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#ECE1D1',
   },
   
-  // Основной контейнер - имитация CSS Grid
-  container: {
-    flex: 0.5,
+  headerContainer: {
     paddingHorizontal: 16,
+    backgroundColor: '#ECE1D1',
   },
   
-  // Строка 1: Стрелка
   arrowContainer: {
-    height: '7.5%', // 0.3fr от общей высоты
+    height: 40,
     justifyContent: 'center',
-   
+    paddingVertical: 8,
   },
 
-  // Строка 2: Аватар + Информация
   row2: {
-    height: '42.5%', // 1.7fr от общей высоты
     flexDirection: 'row',
-    paddingVertical: 20,
-    
+    paddingVertical: 16,
   },
   
-  // Левая колонка: Аватар (1 часть)
   avatarContainer: {
     flex: 1,
     alignItems: 'center',
@@ -147,38 +191,33 @@ const styles = StyleSheet.create({
   },
 
   iconContainer: {
-    flex: 2, // 2/3 высоты
+    flex: 2,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
   },
   
   iconPlaceholder: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
+    width: 90,
+    height: 90,
+    borderRadius: 45,
     backgroundColor: '#A4B88C',
   },
   
   starsContainer: {
-    flex: 1, // 1/3 высоты
+    flex: 1,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-
-  starsPlaceholder: {
-    width: 60,
-    height: 20,
-    backgroundColor: '#ddd',
-    borderRadius: 4,
+    flexDirection: 'row',
+    marginTop: 8,
   },
   
-  // Правая колонка: Информация (2 части)
   usernameContainer: {
     flex: 2,
     marginLeft: 20,
     justifyContent: 'space-between',
+    paddingVertical: 8,
   },
   
   userNameContainer: {
@@ -186,10 +225,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-   userName: {
+  userName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color:'#4E5B3F',
   },
   
   roleContainer: {
@@ -199,14 +238,14 @@ const styles = StyleSheet.create({
   
   role: {
     fontSize: 16,
-    color: '#666',
+    color:'#4E5B3F',
   },
   
   statsContainer: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    },
+  },
   
   publicationContainer: {
     flex: 1,
@@ -221,28 +260,29 @@ const styles = StyleSheet.create({
   statNumber: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#333',
+    color:'#4E5B3F',
   },
   
   statLabel: {
     fontSize: 12,
-    color: '#666',
-     marginTop: 2,
+    color:'#4E5B3F',
+    marginTop: 2,
   },
   
-  // Строка 3: Кнопки + Описание
   row3: {
-    height: '40%', // 1.6fr от общей высоты
     flexDirection: 'row',
-    paddingVertical: 20,
-    
+    paddingVertical: 16,
   },
   
-  // Левая колонка: Кнопки (1 часть)
   buttonsContainer: {
     flex: 1,
-    width: '100%',
     justifyContent: 'center',
+    alignItems: 'flex-start',
+  },
+  
+  buttonWrapper: {
+    width: '100%',
+    maxWidth: 160,
   },
 
   actionButton: {
@@ -254,12 +294,11 @@ const styles = StyleSheet.create({
   },
   
   actionButtonText: {
-    color: '#fff',
+    color:'#4E5B3F',
     fontWeight: '600',
     fontSize: 14,
   },
   
-  // Правая колонка: Описание (2 части)
   descriptionContainer: {
     flex: 2,
     marginLeft: 20,
@@ -269,29 +308,59 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontSize: 14,
     lineHeight: 20,
-    color: '#333',
+    color:'#4E5B3F',
   },
   
-  // Строка 4: Кнопки контактов
   row4: {
-    height: '10%', // 0.4fr от общей высоты
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
+    paddingVertical: 16,
+    paddingBottom: 20,
   },
   
   contactButton: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#ECE1D1',
     paddingVertical: 12,
     marginHorizontal: 4,
     borderRadius: 20,
     alignItems: 'center',
-    },
+    borderWidth: 1,
+    borderColor: '#D0C7BA',
+    shadowColor: '#5D684F',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.4,
+    shadowRadius: 4.69,
+    elevation: 4,
+  },
   
   contactButtonText: {
     fontSize: 12,
     color: '#333',
+    fontWeight: '500',
   },
+  
+  divider: {
+    height: 1,
+    backgroundColor: "#5D684F",
+    marginHorizontal: 16,
+    marginVertical:10,
+  },
+  
+  flatList: {
+    flex: 1,
+    backgroundColor: '#ECE1D1',
+  },
+  
+  postsContainer: {
+    padding: 0,
+    paddingBottom: 40,
+  },
+  
+  columnWrapper: {
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  
 });

@@ -29,10 +29,11 @@ export default function RegistrationForm({
   return (
     <View style={styles.container}>
       <Input
-        label="Имя пользователя, эл. адрес"
+        label="Имя пользователя"
         value={username}
         onChangeText={onUsernameChange}
-        placeholder="Введите имя пользователя или email"
+        placeholder="Введите имя пользователя"
+        autoCapitalize="none"
       />
       
       <Input
@@ -44,7 +45,7 @@ export default function RegistrationForm({
       />
 
       <Input
-        label="Пароль"
+        label="Подтвердите пароль"
         value={confirmPassword}
         onChangeText={onConfirmPasswordChange}
         placeholder="Повторите пароль"
@@ -57,8 +58,6 @@ export default function RegistrationForm({
         <SocialButton icon="f" onPress={() => {}} />
         <SocialButton icon="G" onPress={() => {}} />
       </View>
-
-      
       
        <Button
         title="Зарегистрироваться"
@@ -69,6 +68,10 @@ export default function RegistrationForm({
     </View>
   );
 }
+
+// Стили без изменений
+
+// Стили без изменений
 
 const styles = StyleSheet.create({
   container: {

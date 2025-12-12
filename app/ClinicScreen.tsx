@@ -10,7 +10,6 @@ import {
     View,
 } from 'react-native';
 import Button from './components/ui//Button';
-import ContactInfo from './components/ui//ContactInfo';
 import IconButton from './components/ui//IconButton';
 import StatItem from './components/ui//StatItem';
 import Avatar from './components/ui/Avatar';
@@ -95,12 +94,7 @@ const ClinicScreen: React.FC = () => {
           <IconButton icon="phone" title="Телефон" onPress={handlePhone} />
         </View>
 
-        {/* Alternative contact info display */}
-        <View style={styles.contactsContainer}>
-          <ContactInfo type="message" value="Сообщение" />
-          <ContactInfo type="email" value="Электронная почта" />
-          <ContactInfo type="phone" value="Телефон" />
-        </View>
+       
       </ScrollView>
     </SafeAreaView>
   );

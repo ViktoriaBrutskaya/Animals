@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import RegistrationForm from './components/auth/RegistrationForm';
 import TabHeader from './components/ui/TabHeader';
+import { apiService } from './api/service';
 
 export default function RegistrationScreen() {
   const [username, setUsername] = useState('');
@@ -20,24 +21,49 @@ export default function RegistrationScreen() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleRegistration = async () => {
-    if (!username || !password || !confirmPassword) {
-      Alert.alert('Ошибка', 'Заполните все поля');
-      return;
-    }
+const handleRegistration = async () => {
+  console.log('=== Начало регистрации ===');
+  console.log('Username:', username);
+  console.log('Password:', password);
+  
+  if (!username || !password || !confirmPassword) {
+    Alert.alert('Ошибка', 'Заполните все поля');
+    return;
+  }
 
-    if (password !== confirmPassword) {
-      Alert.alert('Ошибка', 'Пароли не совпадают');
-      return;
-    }
+  if (password !== confirmPassword) {
+    Alert.alert('Ошибка', 'Пароли не совпадают');
+    return;
+  }
 
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+  setLoading(true);
+  
+  try {
+    console.log('Отправка запроса к API...');
+    
+    const userData = await apiService.register({
+      username: username,
+      email: username+ "@example.com", // дублируем
+      password: password
+    });
+
+    console.log('Ответ от API:', userData);
+    
+    if (userData) {
+      console.log('Регистрация успешна!');
       Alert.alert('Успешно', 'Регистрация прошла успешно');
       router.push('/clinic');
-    }, 1000);
-  };
+    } else {
+      console.log('Регистрация не удалась');
+    }
+  } catch (error) {
+    console.error('Ошибка при регистрации:', error);
+    Alert.alert('Ошибка', 'Не удалось зарегистрироваться');
+  } finally {
+    setLoading(false);
+    console.log('=== Конец регистрации ===');
+  }
+};
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
@@ -80,6 +106,10 @@ export default function RegistrationScreen() {
     </KeyboardAvoidingView>
   );
 }
+
+// Стили без изменений
+
+// Стили без изменений
 
 const styles = StyleSheet.create({
   container: {
